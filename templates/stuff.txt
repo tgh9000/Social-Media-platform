@@ -1,0 +1,74 @@
+
+
+
+
+
+
+
+<a href="{{url_for('resetLogs')}}">
+                    <button type="submit"  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-950 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mb-6"> 
+                        View Like reset Logs
+                    </button>
+                </a>
+                {% for image in artList%}
+
+                <div class="flex flex-col sm:flex-row bg-violet-200 rounded-lg shadow-md p-6 mb-8 ">
+                    <!-- Image -->
+                    <img src="data:image/jpeg;base64,{{ image.image_base64 }}" alt="{{image.name}}" class="w-full sm:w-1/2 h-auto sm:h-full object-cover rounded-lg mb-4 sm:mb-0">
+                    
+                    <!-- Text and form content -->
+                    <div class="flex flex-col border-1-4 p-4 overflow-hidden">
+                        <h2 class="text-xl font-bold text-purple-800 mb-2">Artwork name: {{image.name}}</h2>
+                        <div class="flex text-gray-600 mb-2">                    
+                            <p>user: {{image.user.username}}</p>
+                        </div>
+                        <div class="flex text-gray-600 mb-2">                    
+                            <p>likes: {{image.likes}}</p>
+                        </div>
+                        <div class="flex text-gray-600 mb-2">
+                            <p>uploaded on : {{image.Date}} </p>
+                        </div>
+                        <div class="flex text-gray-600 mb-2">
+                            <p>status: {{image.status}} </p>
+                        </div>
+                        <p class="text-gray-600">Location: {{image.location}} </p>
+                
+                        <form method="post" action="/approve"> 
+                            <input type="hidden" name="id" id="id" value="{{image.id}}">
+                            <h2 class="text-l font-bold text-purple-800 mb-2">Please select a location</h2>
+                            <div class="space-y-4 mb-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="Piazza" name="location" value="Piazza" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300" required>
+                                    <label for="Piazza" class="ml-2 block text-sm font-medium text-gray-700">Piazza</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="MSB" name="location" value="MSB" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
+                                    <label for="MSB" class="ml-2 block text-sm font-medium text-gray-700">MSB</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="DCS" name="location" value="DCS" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
+                                    <label for="DCS" class="ml-2 block text-sm font-medium text-gray-700">DCS Atrium</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="none" name="location" value="none" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300">
+                                    <label for="none" class="ml-2 block text-sm font-medium text-gray-700">None</label>
+                                </div>
+                            </div>
+                
+                            <input type="submit" value="Approve this post" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-950 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mb-2">  
+                        </form>
+                        
+                        <!-- Unapprove and Archive forms -->
+                        <form method="post" action="/unarchive">
+                            <input type="hidden" name="id" id="id" value="{{image.id}}">
+                            <input type="submit" value="Do not Approve post" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-950 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mb-2">  
+                        </form>
+                
+                        <form method="post" action="/archive"> 
+                            <input type="hidden" name="id" id="id" value="{{image.id}}">
+                            <input type="submit" value="Archive post" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-950 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mb-2">  
+                        </form>
+                    </div>
+                </div>
+                
+                {% endfor %}

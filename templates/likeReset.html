@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Like Reset Log</title>
+        <link href="../static/css/output.css" rel="stylesheet">
+    </head>
+    <body class="bg-white text-black min-h-screen overflow-x-hidden">
+        <!-- Desktop Sidebar - hidden on mobile -->
+        <aside class="hidden sm:block w-48 bg-black text-white fixed h-screen overflow-y-auto z-10">
+            <div class="p-4">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-full h-auto mb-4">
+                </a>
+            </div>
+            <nav class="space-y-4">
+                {%if current_user.is_authenticated %}
+                <a href="{{url_for('loggingOut')}}" class="block px-4 py-2 hover:bg-gray-800" > Logout </a>
+                <a href="{{url_for('imageUploadPage')}}" class="block px-4 py-2 hover:bg-gray-800">Upload Image </a>
+                <a href="{{url_for('getProfile')}}" class="block px-4 py-2 hover:bg-gray-800">Profile</a>
+                {% else %}
+                <a href= "{{url_for('loginPage')}}" class="block px-4 py-2 hover:bg-gray-800" > Log in </a> 
+                <a href = "{{url_for('registerPage')}}" class="block px-4 py-2 hover:bg-gray-800" > Create Account </a> 
+                {% endif %}
+                {% if current_user.admin == True %}
+                <a href="{{url_for('getpending')}}" class="block px-4 py-2 hover:bg-gray-800">Moderate</a> 
+                {% endif %}
+                <a href="{{url_for('imageFinder')}}" class="block px-4 py-2 hover:bg-gray-800">View Images</a>
+            </nav>
+        </aside>
+    
+        <!-- Mobile Top Navigation - visible only on mobile -->
+        <div class="sm:hidden bg-black text-white w-full">
+            <div class="flex items-center p-2">
+                <a href="{{ url_for('index') }}" class="flex-shrink-0">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="h-10 w-auto">
+                </a>
+                <div class="ml-2 text-white">
+                    <h1 class="text-lg font-bold">Vision On</h1>
+                    <p class="text-xs">Bringing artistic visions to life</p>
+                </div>
+            </div>
+            <nav class="flex overflow-x-auto pb-2 px-2 space-x-4 whitespace-nowrap">
+                {%if current_user.is_authenticated %}
+                <a href="{{url_for('loggingOut')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded" > Logout </a>
+                <a href="{{url_for('imageUploadPage')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded">Upload</a>
+                <a href="{{url_for('getProfile')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded">Profile</a>
+                {% else %}
+                <a href= "{{url_for('loginPage')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded" > Log in </a> 
+                <a href = "{{url_for('registerPage')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded" > Sign Up </a> 
+                {% endif %}
+                {% if current_user.admin == True %}
+                <a href="{{url_for('getpending')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded">Moderate</a> 
+                {% endif %}
+                <a href="{{url_for('imageFinder')}}" class="inline-block px-3 py-1 hover:bg-gray-800 rounded">Gallery</a>
+            </nav>
+        </div>
+    
+        <!-- Main content - adjusted for full width -->
+        <div class="w-full sm:ml-48 max-w-full overflow-x-hidden">
+            <!-- Black banner with company name - only visible on desktop -->
+            <header class="hidden sm:block bg-black py-4 px-6">
+                <div class="w-full max-w-full">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white">Vision On</h1>
+                        <p class="text-sm md:text-base text-white">Warwick's finest digital art</p>
+                    </div>
+                </div>
+            </header>
+    
+            <!-- Main content with boxes -->
+            <main class="w-full px-4 py-4 sm:py-8 max-w-full">
+                <!-- Desktop Table (hidden on mobile) -->
+                <div class="hidden sm:block overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-purple-600 text-white">
+                                <!-- Table Headers -->
+                                <th class="px-4 py-3 text-left text-sm font-medium border border-purple-800">ID</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium border border-purple-800">Artwork ID</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium border border-purple-800">Reason</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium border border-purple-800">Upload Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reset in resets %}
+                            <tr class="hover:bg-violet-50">
+                                <!-- Table content -->
+                                <td class="px-4 py-3 text-sm text-gray-700 border border-gray-300">{{ reset.id }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 border border-gray-300">{{ reset.art }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 border border-gray-300">{{ reset.reason }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 border border-gray-300">{{ reset.uploadDate }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Mobile Cards (visible only on mobile) -->
+            <div class="sm:hidden">
+                <div class="divide-y divide-gray-300">
+                    {% for reset in resets %}
+                    <div class="p-4 bg-white hover:bg-violet-50">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-xs font-medium text-purple-800 p-2 bg-purple-100 rounded">ID:</div>
+                            <div class="text-xs text-gray-700 p-2 border border-gray-300 rounded">{{ reset.id }}</div>
+                            
+                            <div class="text-xs font-medium text-purple-800 p-2 bg-purple-100 rounded">Artwork ID:</div>
+                            <div class="text-xs text-gray-700 p-2 border border-gray-300 rounded">{{ reset.art }}</div>
+                            
+                            <div class="text-xs font-medium text-purple-800 p-2 bg-purple-100 rounded">Upload Date:</div>
+                            <div class="text-xs text-gray-700 p-2 border border-gray-300 rounded">{{ reset.uploadDate }}</div>
+                            
+                            <div class="col-span-2 mt-2">
+                                <div class="text-xs font-medium text-purple-800 p-2 bg-purple-100 rounded">Reason:</div>
+                                <div class="text-xs text-gray-700 mt-1 p-2 border border-gray-300 rounded">{{ reset.reason }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </main>
+    
+
+        </div>
+    </body>
+</html>
