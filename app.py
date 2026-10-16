@@ -20,8 +20,18 @@ import io
 
 
 app = Flask(__name__)
-app.config['MAIL_SUPPRESS_SEND'] = False
-app.secret_key='12345'
+app.secret_key = os.environ.get('SECRET_KEY', '12345')
+
+# Mail is only actually sent if MAIL_SERVER is configured via environment
+# variables. Otherwise sending is suppressed so the app still boots and the
+# register/reset flows still work on a machine with no SMTP server set up.
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_SUPPRESS_SEND'] = not app.config['MAIL_SERVER']
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_SENDER', 'noreply@dcs.warwick.ac.uk')
 mail = Mail(app)
 
 serializer = URLSafeTimedSerializer(app.secret_key)
@@ -106,7 +116,7 @@ def makeNewUser():
     <p> Dear {user},</p> 
     <p> Please click on the following link to verify your email <a href = "{link}"> please click here</a></p>
     <p> Kind Regards, Vision On</p>"""
-    sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
+    sender = app.config['MAIL_DEFAULT_SENDER']
     msg = Message (sender = ("NOREPLY",sender),subject="Verify Email account",recipients=recipients)
     msg.html = contents
     mail.send(msg)
@@ -158,7 +168,7 @@ def passResetRequest():
         <p> Kind Regards, Vision On</p>
         """
         recipients = [email]
-        sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
+        sender = app.config['MAIL_DEFAULT_SENDER']
         msg = Message (sender = ("NOREPLY",sender),subject="reset your password",recipients=recipients)
         msg.html = contents
         mail.send(msg)
@@ -217,7 +227,7 @@ def emailResetRequest():
         <p> Kind Regards, Vision On</p>
         """
         recipients = [email]
-        sender = f"{os.getlogin()}@dcs.warwick.ac.uk"
+        sender = app.config['MAIL_DEFAULT_SENDER']
         msg = Message (sender = ("NOREPLY",sender),subject="reset your Email",recipients=recipients)
         msg.html = contents
         mail.send(msg)
